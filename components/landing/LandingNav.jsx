@@ -88,7 +88,7 @@ const MobileNav = () => {
     },
     {
       title: "Launch Demo",
-      href: "https://metaverse247.live:3001/trontown",
+      onClick: () => router.push("https://metaverse247.live:3001/trontown"),
     },
   ];
 
