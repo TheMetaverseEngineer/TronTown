@@ -1,20 +1,24 @@
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   AppBar,
   BottomNavigation,
   BottomNavigationAction,
   Button,
+  Collapse,
+  List,
+  ListItemButton,
   ListItemText,
   Menu,
   MenuItem,
   Paper,
   Toolbar,
-  useMediaQuery,
 } from "@mui/material";
 import { Box } from "@mui/system";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 export default function LandingNav() {
   // useEffect(() => {
@@ -53,23 +57,46 @@ const MobileNav = () => {
   const [value, setValue] = useState(0);
   // const [selectedIndex, setSelectedIndex] = useState(null);
   const open = Boolean(anchorEl);
-  const matches = useMediaQuery("(min-width: 500px)");
   const mobileNavItems = [
     { title: "Home", href: "/" },
     { title: "Whitepaper", href: "" },
     { title: "About", href: "/#about" },
-    { title: "Marketplace", href: "/market" },
+    {
+      title: "Marketplace",
+      subLinks: [
+        {
+          title: "Explore",
+          href: "/market",
+        },
+        {
+          title: "Tron NFT Generator",
+          href: "/nft-generator",
+        },
+        {
+          title: "Tron Surprise Egg",
+          href: "/surprise-egg",
+        },
+        {
+          title: "Tron NFT Cars",
+          href: "/tron-cars",
+        },
+        {
+          title: "Tron Town Land",
+          href: "/tron-land",
+        },
+      ],
+    },
     {
       title: "Launch Demo",
       href: "https://metaverse247.live:3001/trontown",
     },
   ];
 
-  const handleMenuClicked = (index, link) => {
-    setSelectedIndex(index);
-    setAnchorEl(null);
-    router.push(link.url);
-  };
+  // const handleMenuClicked = (index, link) => {
+  //   setSelectedIndex(index);
+  //   setAnchorEl(null);
+  //   router.push(link.url);
+  // };
 
   return (
     <Box className="md:hidden">
@@ -98,7 +125,7 @@ const MobileNav = () => {
           }}
         >
           {mobileNavItems
-            ?.filter((_, i, items) => i < (matches ? items.length : 3))
+            ?.filter((_, i) => i < 3)
             .map((link, i) => (
               <BottomNavigationAction
                 key={i}
@@ -114,12 +141,8 @@ const MobileNav = () => {
               />
             ))}
           <BottomNavigationAction
-            aria-controls={open ? "more-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            id="more-button"
             icon={<MoreVertIcon />}
-            className={`text-gray-400 ${matches ? "hidden" : ""}`}
+            className={`text-gray-400`}
             sx={{
               minWidth: 0,
               "&.Mui-selected": {
@@ -128,11 +151,11 @@ const MobileNav = () => {
             }}
             onClick={(event) => setAnchorEl(event.currentTarget)}
           />
-          <MoreMenu
+          <SubMenu
+            className="md:hidden"
             anchorEl={anchorEl}
             setAnchorEl={setAnchorEl}
-            matches={matches}
-            mobileNavItems={mobileNavItems}
+            items={mobileNavItems.filter((_, i) => i > 2)}
             open={open}
           />
         </BottomNavigation>
@@ -141,59 +164,47 @@ const MobileNav = () => {
   );
 };
 
-const MoreMenu = ({ anchorEl, setAnchorEl, matches, mobileNavItems, open }) => {
-  return (
-    <Menu
-      id="more-menu"
-      anchorEl={anchorEl}
-      open={open}
-      className={`${matches ? "hidden" : ""}`}
-      onClose={() => setAnchorEl(null)}
-      MenuListProps={{
-        "aria-labelledby": "more-button",
-      }}
-      PaperProps={{
-        sx: {
-          bgcolor: "primary.main",
-        },
-      }}
-    >
-      {mobileNavItems
-        .filter((_, i) => i > 2)
-        .map((link, i) => (
-          <MenuItem
-            key={i}
-            // selected={selectedIndex === i}
-            // onClick={() => handleMenuClicked(i, link)}
-            sx={{
-              "&.Mui-selected": {
-                bgcolor: "primary.light",
-                "&:hover": {
-                  bgcolor: "primary.light",
-                },
-              },
-            }}
-          >
-            <Link href={link.href} passHref>
-              <a>
-                <ListItemText className="text-white">{link.title}</ListItemText>
-              </a>
-            </Link>
-          </MenuItem>
-        ))}
-    </Menu>
-  );
-};
-
 const DesktopNav = () => {
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
   const desktopNavItems = [
-    { title: "Home", href: "/" },
-    { title: "Whitepaper", href: "/" },
-    { title: "About", href: "/#about" },
-    { title: "Marketplace", href: "/market" },
+    { title: "Home", onClick: () => router.push("/") },
+    { title: "Whitepaper", onClick: () => router.push("/") },
+    { title: "About", onClick: () => router.push("/#about") },
+    {
+      title: "Marketplace",
+      onClick: (event) => {
+        event.preventDefault();
+        setAnchorEl(event.currentTarget);
+      },
+      href: "/",
+      subLinks: [
+        {
+          title: "Explore",
+          onClick: () => router.push("/market"),
+        },
+        {
+          title: "Tron NFT Generator",
+          onClick: () => router.push("/nft-generator"),
+        },
+        {
+          title: "Tron Surprise Egg",
+          onClick: () => router.push("/surprise-egg"),
+        },
+        {
+          title: "Tron NFT Cars",
+          onClick: () => router.push("/tron-cars"),
+        },
+        {
+          title: "Tron Town Land",
+          onClick: () => router.push("/tron-land"),
+        },
+      ],
+    },
     {
       title: "Launch Demo",
-      href: "https://metaverse247.live:3001/trontown",
+      onClick: () => router.push("https://metaverse247.live:3001/trontown"),
     },
   ];
 
@@ -212,11 +223,24 @@ const DesktopNav = () => {
         />
         <Box className="flex gap-x-5 lg:gap-x-20 xl:gap-x-32">
           {desktopNavItems.map((link, i) => (
-            <Link key={i} href={link.href} passHref>
-              <Button component="a" className="text-white">
+            <Fragment key={i}>
+              <Button
+                component="a"
+                className="text-white"
+                onClick={link?.onClick}
+              >
                 {link.title}
               </Button>
-            </Link>
+              {!!link?.subLinks && (
+                <SubMenu
+                  className="hidden md:block"
+                  anchorEl={anchorEl}
+                  setAnchorEl={setAnchorEl}
+                  items={link?.subLinks}
+                  open={open}
+                />
+              )}
+            </Fragment>
           ))}
         </Box>
         {/* <IconButton className="text-white">
@@ -224,5 +248,85 @@ const DesktopNav = () => {
         </IconButton> */}
       </Toolbar>
     </AppBar>
+  );
+};
+
+const SubMenu = ({ anchorEl, setAnchorEl, items, open, className }) => {
+  const [openCollapsed, setOpenCollapsed] = useState(false);
+
+  return (
+    <Menu
+      anchorEl={anchorEl}
+      open={open}
+      onClose={() => setAnchorEl(null)}
+      className={`${className}`}
+      PaperProps={{
+        sx: {
+          bgcolor: "primary.main",
+        },
+      }}
+    >
+      {items.map((item, i) => {
+        if (item.subLinks) return <CollapsibleMenuItem key={i} item={item} />;
+
+        return (
+          <MenuItem
+            onClick={item?.onClick}
+            key={i}
+            // selected={selectedIndex === i}
+            // onClick={() => handleMenuClicked(i, item)}
+            className="text-white"
+            sx={{
+              "&.Mui-selected": {
+                bgcolor: "primary.light",
+                "&:hover": {
+                  bgcolor: "primary.light",
+                },
+              },
+            }}
+          >
+            <ListItemText>{item.title}</ListItemText>
+            {!!item?.subLinks &&
+              (openCollapsed ? <ExpandLess /> : <ExpandMore />)}
+          </MenuItem>
+        );
+      })}
+    </Menu>
+  );
+};
+
+const CollapsibleMenuItem = ({ item }) => {
+  const [open, setOpen] = useState(true);
+
+  return (
+    <>
+      <MenuItem
+        onClick={() => setOpen((prev) => !prev)}
+        className="text-white"
+        sx={{
+          minWidth: 185,
+          "&.Mui-selected": {
+            bgcolor: "primary.light",
+            "&:hover": {
+              bgcolor: "primary.light",
+            },
+          },
+        }}
+      >
+        <ListItemText>{item.title}</ListItemText>
+        {open ? <ExpandLess /> : <ExpandMore />}
+      </MenuItem>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding className="text-white">
+          {item.subLinks.map((link, i) => (
+            <Link href={link.href} passHref key={i}>
+              <ListItemButton sx={{ pl: 4 }}>
+                <ListItemText primary={link.title} />
+              </ListItemButton>
+            </Link>
+          ))}
+        </List>
+      </Collapse>
+    </>
   );
 };
