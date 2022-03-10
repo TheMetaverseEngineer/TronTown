@@ -59,7 +59,7 @@ const MobileNav = () => {
   const open = Boolean(anchorEl);
   const mobileNavItems = [
     { title: "Home", href: "/" },
-    { title: "Whitepaper", href: "" },
+    { title: "Whitepaper", href: "/assets/tronTownWhitepaper.pdf" },
     { title: "About", href: "/#about" },
     {
       title: "Marketplace",
@@ -170,7 +170,10 @@ const DesktopNav = () => {
   const open = Boolean(anchorEl);
   const desktopNavItems = [
     { title: "Home", onClick: () => router.push("/") },
-    { title: "Whitepaper", onClick: () => router.push("/") },
+    {
+      title: "Whitepaper",
+      onClick: () => router.push("/assets/tronTownWhitepaper.pdf"),
+    },
     { title: "About", onClick: () => router.push("/#about") },
     {
       title: "Marketplace",
